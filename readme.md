@@ -59,7 +59,7 @@ Node.js interface to a gitolite backend system, inspired by the ruby gem [gitoli
     // Delete user
     myAdminRepo.removeUser('alice');
 
-### Group managemnet
+### Group management
 
     myAdminRepo.addGroup('@admins', [ 'alice', 'bob' ]);
 	var adminGroup = myAdminRepo.groups['@admins'];
