@@ -35,7 +35,7 @@ state of the repository, the configuration files, and the user keys.
     
     // Dump internal data structures and reload the repo
     // This will call `git fetch origin master && git merge --no-commit origin/master`
-    myAdminRepo.reload(function (err, adminRepo) {
+    adminRepo.reload(function (err, adminRepo) {
       if (err) throw err;
       // manage here
     });
@@ -47,8 +47,8 @@ state of the repository, the configuration files, and the user keys.
     var bobsDesktopSSHkey = 'ssh-rsa AAS1i5aV...Fg90SKJ4== Bob@NATOMA'
     var bobsSSHkey = 'ssh-rsa AAAA53bd...uV36sBsm== Bob@SHASTA';
     
-    myAdminRepo.addUser('bob');
-    var bob = myAdminRepo.users['bob'];
+    adminRepo.addUser('bob');
+    var bob = adminRepo.users['bob'];
     bob.addKey('laptop', bobsLaptopSSHkey);   // creates 'keydir/laptop/bob.pub'
     bob.addKey('desktop', bobsDesktopSSHkey);
     bob.addKey(bobsSSHkey); // creates 'keydir/{ SHA1(bobsSSHkey) }/bob.pub'
@@ -56,7 +56,7 @@ state of the repository, the configuration files, and the user keys.
     
     // Fluent interface
     var alicesMacbookSSHkey = 'ssh-rsa AAAA7b4p...5iK2kFSD== Alice@OAKLAND';
-    var alice = myAdminRepo.addUser('alice');
+    var alice = adminRepo.addUser('alice');
     alice.addKey('macbook', alicesMacbookSSHkey) // creates keydir/macbook/alice.pub
       .addKey('ubuntu', alicesUbuntuSSHkey)      // creates keydir/macbook/alice.pub
       .addKey('ubuntulaptop', alicesUbuntuLaptopSSHkey);
@@ -66,38 +66,38 @@ state of the repository, the configuration files, and the user keys.
       console.log(label + ' => ' + alice.keys[label]); // macbook => ssh-rsa AAAA7b4p...5iK2kFSD== Alice@OAKLAND;
     
     // Delete user
-    myAdminRepo.removeUser('alice');
+    adminRepo.removeUser('alice');
 
     // Please note that users who are created but who are not given SSH keys
     // will NOT be added to the admin repository. This is a limitation of
     // gitolite itself.
-    var carol = myAdminRepo.addUser('carol');
-    myAdminRepo.commit(function (err, myAdminRepo) {
-      myAdminRepo.users['carol'] // does not exist
+    var carol = adminRepo.addUser('carol');
+    adminRepo.commit(function (err, adminRepo) {
+      adminRepo.users['carol'] // does not exist
     });
 
 ### Group management
 
-    myAdminRepo.addGroup('@admins', [ 'alice', 'bob' ]);
-	var adminGroup = myAdminRepo.groups['@admins'];
+    adminRepo.addGroup('@admins', [ 'alice', 'bob' ]);
+	var adminGroup = adminRepo.groups['@admins'];
 	adminGroup.add('dave');
 	adminGroup.remove('bob');
     console.log(adminGroup.users.join(', ')); // alice, dave
     
     // get group object from 'addGroup()'
-    var devs = myAdminRepo.addGroup('@devs', [ 'ryan', 'sally', 'thomas' ]);
+    var devs = adminRepo.addGroup('@devs', [ 'ryan', 'sally', 'thomas' ]);
     console.log(devs.users.join(', ')); // alice, dave
 
 ### Repo management
 
-    var fooRepo = myAdminRepo.addRepo('foo');
+    var fooRepo = adminRepo.addRepo('foo');
     
     // Delete the repo
-    myAdminRepo.removeRepo('bar');
+    adminRepo.removeRepo('bar');
 
 ### User/Group permissions
 
-    var fooRepo = myAdminRepo.repos['foo'];
+    var fooRepo = adminRepo.repos['foo'];
     fooRepo.addPermission('@admins', 'RW+');
     fooRepo.addPermission('john', 'RW+');
     fooRepo.addPermission('john', 'R', 'development');
@@ -108,13 +108,13 @@ state of the repository, the configuration files, and the user keys.
     
 ### Repo configuration 
 
-    var fooRepo = myAdminRepo.repos['foo'];
+    var fooRepo = adminRepo.repos['foo'];
     fooRepo.addConfig('hook.foo', './runfoobar.sh');
     fooRepo.removeConfig('hook.bar');
     var hookFoobarValue = fooRepo.configs['hook.foo'];
     
     // commit changes to repo and push
-    myAdminRepo.commit(function (err, myAdminRepo) {
+    adminRepo.commit(function (err, adminRepo) {
       if (err) throw err;
       console.log('admin repo updated');
     });
