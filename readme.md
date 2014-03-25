@@ -2,6 +2,11 @@
 
 Node.js interface to a gitolite backend system, inspired by the ruby gem [gitolite](https://github.com/wingrunr21/gitolite)
 
+This works by maintaining interal data structures to represent the gitoltie
+admin repository. It does not require you to relinquish external control over
+the repository as it will rebuild the data structures based upon the current
+state of the repository, the configuration files, and the user keys.
+
 ## Features
 
 * Creation and management of Repositories, Users, Keys, and Groups
@@ -23,10 +28,17 @@ Node.js interface to a gitolite backend system, inspired by the ruby gem [gitoli
 ### Get the admin repo object
 
     var gitolite = require('gitolite');
-    var myAdminRepo = gitolite('/path/to/gitolite/repo');
+    gitolite('/path/to/gitolite/repo', function (err, adminRepo) {
+      if (err) throw err;
+      // manage here
+    });
     
     // Dump internal data structures and reload the repo
-    myAdminRepo.reload();
+    // This will call `git fetch origin master && git merge --no-commit origin/master`
+    myAdminRepo.reload(function (err, adminRepo) {
+      if (err) throw err;
+      // manage here
+    });
 
 ### User/Key management
 
@@ -42,9 +54,6 @@ Node.js interface to a gitolite backend system, inspired by the ruby gem [gitoli
     bob.addKey(bobsSSHkey); // creates 'keydir/{ SHA1(bobsSSHkey) }/bob.pub'
     bob.removeKey('laptop');
     
-    // Load key from file
-    bob.addKeyFile('worklaptop', '/path/to/key.pub');
-    
     // Fluent interface
     var alicesMacbookSSHkey = 'ssh-rsa AAAA7b4p...5iK2kFSD== Alice@OAKLAND';
     var alice = myAdminRepo.addUser('alice');
@@ -58,6 +67,14 @@ Node.js interface to a gitolite backend system, inspired by the ruby gem [gitoli
     
     // Delete user
     myAdminRepo.removeUser('alice');
+
+    // Please note that users who are created but who are not given SSH keys
+    // will NOT be added to the admin repository. This is a limitation of
+    // gitolite itself.
+    var carol = myAdminRepo.addUser('carol');
+    myAdminRepo.commit(function (err, myAdminRepo) {
+      myAdminRepo.users['carol'] // does not exist
+    });
 
 ### Group management
 
@@ -97,7 +114,7 @@ Node.js interface to a gitolite backend system, inspired by the ruby gem [gitoli
     var hookFoobarValue = fooRepo.configs['hook.foo'];
     
     // commit changes to repo and push
-    myAdminRepo.commit(function (err) {
+    myAdminRepo.commit(function (err, myAdminRepo) {
       if (err) throw err;
       console.log('admin repo updated');
     });
