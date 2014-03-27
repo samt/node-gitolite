@@ -1,5 +1,7 @@
 # gitolite [![Build Status](https://secure.travis-ci.org/samt/node-gitolite.png)](http://travis-ci.org/samt/node-gitolite)
 
+This is a Work-in-progress.
+
 Node.js interface to a gitolite backend system, inspired by the ruby gem [gitolite](https://github.com/wingrunr21/gitolite)
 
 This works by maintaining interal data structures to represent the gitoltie
