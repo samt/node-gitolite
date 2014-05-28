@@ -34,7 +34,7 @@ state of the repository, the configuration files, and the user keys.
       if (err) throw err;
       // manage here
     });
-    
+
     // Dump internal data structures and reload the repo
     // This will call `git fetch origin master && git merge --no-commit origin/master`
     adminRepo.reload(function (err, adminRepo) {
@@ -48,25 +48,25 @@ state of the repository, the configuration files, and the user keys.
     var bobsLaptopSSHkey = 'ssh-rsa AAAAB3Nz...cPel5ufw== Bob@TAHOE';
     var bobsDesktopSSHkey = 'ssh-rsa AAS1i5aV...Fg90SKJ4== Bob@NATOMA'
     var bobsSSHkey = 'ssh-rsa AAAA53bd...uV36sBsm== Bob@SHASTA';
-    
+
     adminRepo.addUser('bob');
     var bob = adminRepo.users['bob'];
     bob.addKey('laptop', bobsLaptopSSHkey);   // creates 'keydir/laptop/bob.pub'
     bob.addKey('desktop', bobsDesktopSSHkey);
     bob.addKey(bobsSSHkey); // creates 'keydir/{ SHA1(bobsSSHkey) }/bob.pub'
     bob.removeKey('laptop');
-    
+
     // Fluent interface
     var alicesMacbookSSHkey = 'ssh-rsa AAAA7b4p...5iK2kFSD== Alice@OAKLAND';
     var alice = adminRepo.addUser('alice');
     alice.addKey('macbook', alicesMacbookSSHkey) // creates keydir/macbook/alice.pub
       .addKey('ubuntu', alicesUbuntuSSHkey)      // creates keydir/macbook/alice.pub
       .addKey('ubuntulaptop', alicesUbuntuLaptopSSHkey);
-    
+
     // View all keys a given user has
-    for (var label in alice.keys) 
+    for (var label in alice.keys)
       console.log(label + ' => ' + alice.keys[label]); // macbook => ssh-rsa AAAA7b4p...5iK2kFSD== Alice@OAKLAND;
-    
+
     // Delete user
     adminRepo.removeUser('alice');
 
@@ -85,7 +85,7 @@ state of the repository, the configuration files, and the user keys.
 	adminGroup.add('dave');
 	adminGroup.remove('bob');
     console.log(adminGroup.users.join(', ')); // alice, dave
-    
+
     // get group object from 'addGroup()'
     var devs = adminRepo.addGroup('@devs', [ 'ryan', 'sally', 'thomas' ]);
     console.log(devs.users.join(', ')); // alice, dave
@@ -93,7 +93,7 @@ state of the repository, the configuration files, and the user keys.
 ### Repo management
 
     var fooRepo = adminRepo.addRepo('foo');
-    
+
     // Delete the repo
     adminRepo.removeRepo('bar');
 
@@ -107,14 +107,14 @@ state of the repository, the configuration files, and the user keys.
 
     // removes permission, DOES NOT deny access
     fooRepo.removePermission('jane'); // partial match of line
-    
-### Repo configuration 
+
+### Repo configuration
 
     var fooRepo = adminRepo.repos['foo'];
     fooRepo.addConfig('hook.foo', './runfoobar.sh');
     fooRepo.removeConfig('hook.bar');
     var hookFoobarValue = fooRepo.configs['hook.foo'];
-    
+
     // commit changes to repo and push
     adminRepo.commit(function (err, adminRepo) {
       if (err) throw err;
