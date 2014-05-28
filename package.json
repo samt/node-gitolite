@@ -2,7 +2,7 @@
   "name": "gitolite",
   "version": "0.0.1",
   "description": "Interface to a gitolite backend system",
-  "main": "index.js",
+  "main": "lib/gitolite.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/samt/node-gitolite.git"
@@ -15,7 +15,7 @@
     "repository",
     "repo"
   ],
-  "author": "Sam Thompson <git@samt.us>",
+  "author": "Sam Thompson <contact@samt.us>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/samt/node-gitolite/issues"
