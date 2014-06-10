@@ -2,7 +2,7 @@
   "name": "gitolite",
   "version": "0.0.2",
   "description": "Interface to a gitolite backend system",
-  "main": "lib/gitolite.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/samt/node-gitolite.git"
