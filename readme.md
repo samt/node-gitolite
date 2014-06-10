@@ -56,14 +56,13 @@ admin.addUser('bob');
 var bob = admin.users['bob'];
 bob.addKey('laptop', bobsLaptopSSHkey);   // creates 'keydir/laptop/bob.pub'
 bob.addKey('desktop', bobsDesktopSSHkey);
-bob.addKey(bobsSSHkey); // creates 'keydir/{ SHA1(bobsSSHkey) }/bob.pub'
 bob.removeKey('laptop');
 
 // Fluent interface
 var alicesMacbookSSHkey = 'ssh-rsa AAAA7b4p...5iK2kFSD== Alice@OAKLAND';
 var alice = admin.addUser('alice');
 alice.addKey('macbook', alicesMacbookSSHkey) // creates keydir/macbook/alice.pub
-  .addKey('ubuntu', alicesUbuntuSSHkey)      // creates keydir/macbook/alice.pub
+  .addKey('ubuntu', alicesUbuntuSSHkey)      // creates keydir/ubuntu/alice.pub
   .addKey('ubuntulaptop', alicesUbuntuLaptopSSHkey);
 
 // View all keys a given user has
